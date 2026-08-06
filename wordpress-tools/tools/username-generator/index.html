@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cool Username Generator</title>
+<style>
+  .wct-username{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-username *{box-sizing:border-box;margin:0;padding:0}
+  .wct-username .wrap{max-width:680px;margin:0 auto}
+  .wct-username h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-username .sub{color:#5a6478;margin-bottom:22px}
+  .wct-username .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-username .row{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#f6f8fd;border:1px solid #e3e8f2;border-radius:10px;padding:13px 14px;margin-bottom:10px}
+  .wct-username .row b{font-size:1.05rem;overflow-wrap:anywhere}
+  .wct-username .row button{background:#e8ecf7;color:#33405c;border:0;border-radius:7px;padding:7px 13px;font-size:.8rem;font-weight:600;cursor:pointer;flex-shrink:0}
+  .wct-username .row button:hover{background:#d6ddef}
+  .wct-username button.main{background:#4f6ef2;color:#fff;border:0;border-radius:9px;padding:12px 22px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s}
+  .wct-username button.main:hover{opacity:.9}
+  .wct-username button.main:active{transform:scale(.97)}
+  .wct-username .genrow{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .wct-username .genrow label{font-size:.9rem;color:#5a6478}
+  .wct-username input[type=number]{width:70px;padding:8px 10px;border:2px solid #dde2ec;border-radius:8px;font-size:.95rem;text-align:center;background:#fff;color:#1c2333}
+  .wct-username .hint{font-size:.8rem;color:#8a93a6;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wct-username">
+<div class="wrap">
+  <h1>Cool Username Generator</h1>
+  <p class="sub">Instantly generate catchy, stylish usernames for gaming, social media, streaming and more. Click any name to copy it.</p>
+  <div class="card">
+    <div id="list"></div>
+    <div class="genrow">
+      <button class="main" onclick="gen()">Generate names</button>
+      <label for="count">Count</label>
+      <input type="number" id="count" value="5" min="1" max="10">
+    </div>
+    <p class="hint" id="copyMsg"></p>
+    <p class="hint">A mix of adjectives, nouns, tech terms and cool modifiers. All generated in your browser — no limits, no signup.</p>
+  </div>
+</div>
+</div>
+<script>
+  const adj = ['Shadow','Neon','Silent','Blazing','Dark','Frosty','Savage','Crimson','Turbo','Cosmic','Phantom','Lucky','Electric','Golden','Stealth','Rogue','Tiny','Mighty','Cyber','Nova','Epic','Sneaky','Royal','Hyper','Zen'];
+  const noun = ['Wolf','Falcon','Tiger','Panda','Knight','Samurai','Ninja','Dragon','Phoenix','Raven','Fox','Panther','Viper','Hawk','Bison','Otter','Ghost','Pilot','Runner','Wizard','Byte','Pixel','Storm','Coder'];
+  const mod = ['_X','X_','_99','_007','_King','_Lord','_Pro','_HD','_Gamer','_YT','_01','_Master','_OG','_zz','_v2','_77','_Prime','_Edge','_Squad','_Legend'];
+  const nums = ['', '', '', '', '1','2','3','7','8','9','11','22','24','42','69','77','99','07','21','23'];
+  const cryptoObj = window.crypto;
+  function ri(n) { const b = new Uint32Array(1); cryptoObj.getRandomValues(b); return b[0] % n; }
+  function pick(a) { return a[ri(a.length)]; }
+  function makeName() {
+    const style = ri(4);
+    let n;
+    if (style === 0) n = pick(adj) + pick(noun);
+    else if (style === 1) n = pick(adj) + pick(noun) + pick(nums);
+    else if (style === 2) n = pick(adj) + pick(mod);
+    else n = pick(noun) + pick(nums) + pick(mod);
+    return n;
+  }
+  function gen() {
+    const n = Math.min(10, Math.max(1, +document.getElementById('count').value || 5));
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    const used = new Set();
+    while (list.children.length < n) {
+      const name = makeName();
+      if (used.has(name)) continue;
+      used.add(name);
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<b>${name}</b><button onclick="copyName(this)">Copy</button>`;
+      list.appendChild(row);
+    }
+  }
+  function copyName(btn) {
+    const name = btn.parentElement.querySelector('b').textContent;
+    navigator.clipboard.writeText(name).then(() => {
+      document.getElementById('copyMsg').textContent = 'Copied: ' + name;
+    });
+  }
+  gen();
+</script>
+</body>
+</html>

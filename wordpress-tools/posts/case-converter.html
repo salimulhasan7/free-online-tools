@@ -1,0 +1,133 @@
+<!--
+================================================================
+WORDPRESS POST / PAGE SETTINGS
+================================================================
+Title:          Text Case Converter - Uppercase to Lowercase & More
+Slug:           text-case-converter
+Meta description: Free text case converter. Instantly convert text to UPPERCASE, lowercase, Title Case, Sentence case and more. Free, private and works in your browser.
+Focus keyword:  text case converter
+Category:       Work Tools > Text Tools
+Tags:           text case converter, uppercase to lowercase, title case converter, capitalize text, text tools
+Featured image: Screenshot of the case converter tool UI
+================================================================
+HOW TO ADD TO WORDPRESS:
+1. Create a new Page titled "Text Case Converter".
+2. Add a "Custom HTML" block and paste EVERYTHING below.
+3. Set Slug to "text-case-converter".
+4. Add meta description + focus keyword in Rank Math SEO.
+================================================================
+PASTE FROM HERE
+================================================================
+-->
+<style>
+  .wct-case{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-case *{box-sizing:border-box;margin:0;padding:0}
+  .wct-case .wrap{max-width:720px;margin:0 auto}
+  .wct-case h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-case .sub{color:#5a6478;margin-bottom:22px}
+  .wct-case .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-case .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .wct-case button{background:#4f6ef2;color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:.88rem;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s}
+  .wct-case button:hover{opacity:.9}
+  .wct-case button:active{transform:scale(.97)}
+  .wct-case button.ghost{background:#e8ecf7;color:#33405c}
+  .wct-case textarea{width:100%;min-height:200px;border:2px solid #dde2ec;border-radius:10px;padding:14px;font-size:1rem;resize:vertical;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;color:#1c2333}
+  .wct-case textarea:focus{border-color:#4f6ef2}
+  .wct-case .outlabel{display:flex;justify-content:space-between;align-items:center;margin:16px 0 6px;font-size:.85rem;color:#6b7488}
+  .wct-case .outlabel button{padding:6px 12px;font-size:.8rem}
+  .wct-case .hint{font-size:.8rem;color:#8a93a6;margin-top:12px}
+</style>
+<div class="wct-case">
+<div class="wrap">
+  <h1>Text Case Converter</h1>
+  <p class="sub">Convert any text to UPPERCASE, lowercase, Title Case, Sentence case and more with one click.</p>
+  <div class="card">
+    <textarea id="in" placeholder="Paste your text here, then click a conversion button..."></textarea>
+    <div class="btnrow">
+      <button onclick="conv('UPPER')">UPPERCASE</button>
+      <button onclick="conv('lower')">lowercase</button>
+      <button onclick="conv('title')">Title Case</button>
+      <button onclick="conv('sentence')">Sentence case</button>
+      <button onclick="conv('toggle')">tOGGLE cASE</button>
+      <button onclick="conv('caps')">Capitalize Words</button>
+      <button class="ghost" onclick="clearText()">Clear</button>
+    </div>
+    <div class="outlabel">
+      <span>Result</span>
+      <button onclick="copy()">Copy result</button>
+    </div>
+    <textarea id="out" placeholder="Converted text appears here..." onclick="this.select()"></textarea>
+    <p class="hint">Title Case capitalizes the first letter of every word. Sentence case capitalizes only the first letter of each sentence.</p>
+  </div>
+</div>
+</div>
+<script>
+  const i = document.getElementById('in');
+  const o = document.getElementById('out');
+  function titleCase(s) {
+    return s.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase());
+  }
+  function sentenceCase(s) {
+    return s.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase());
+  }
+  function conv(mode) {
+    let t = i.value;
+    if (!t) { o.value = ''; return; }
+    switch (mode) {
+      case 'UPPER': t = t.toUpperCase(); break;
+      case 'lower': t = t.toLowerCase(); break;
+      case 'title': t = titleCase(t); break;
+      case 'sentence': t = sentenceCase(t); break;
+      case 'toggle': t = t.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+      case 'caps': t = t.replace(/(^|\s)(\w)/g, (m, p, c) => p + c.toUpperCase()); break;
+    }
+    o.value = t;
+  }
+  function copy() { navigator.clipboard.writeText(o.value).then(() => { alert('Copied!'); }); }
+  function clearText() { i.value = ''; o.value = ''; i.focus(); }
+</script>
+
+<hr>
+
+<h2>How to Convert Text Case</h2>
+<ol>
+  <li>Paste your text into the input box.</li>
+  <li>Click the conversion you need: UPPERCASE, lowercase, Title Case, Sentence case and more.</li>
+  <li>Click "Copy result" to grab the converted text.</li>
+</ol>
+
+<h2>Features</h2>
+<ul>
+  <li><strong>Six conversions</strong> in one click: uppercase, lowercase, title case, sentence case, alternating case and capitalized words.</li>
+  <li><strong>Instant results</strong> - no waiting, no buttons to submit.</li>
+  <li><strong>Private and free</strong> - your text is never uploaded.</li>
+  <li><strong>Works on any device</strong> with a browser.</li>
+</ul>
+
+<h2>Who Uses a Case Converter?</h2>
+<p>Writers fixing accidentally caps-locked text, students formatting essays, marketers writing social posts, programmers converting identifiers, and anyone tired of retyping text in a different case. It is one of the most used free tools on the internet for good reason.</p>
+
+<h2>Frequently Asked Questions</h2>
+<details>
+  <summary>What is the difference between title case and sentence case?</summary>
+  <p>Title case capitalizes the first letter of every word (e.g. "How To Bake Bread"). Sentence case capitalizes only the first letter of each sentence (e.g. "How to bake bread").</p>
+</details>
+<details>
+  <summary>Is this text case converter free?</summary>
+  <p>Yes, completely free with no account, no watermark and no limit on how much text you convert.</p>
+</details>
+<details>
+  <summary>Does it work with symbols and numbers?</summary>
+  <p>Yes. Letters are converted, while numbers and symbols are left untouched.</p>
+</details>
+<details>
+  <summary>Can I convert large documents?</summary>
+  <p>Yes, paste as much text as you like. The tool runs entirely in your browser, so there is no size limit.</p>
+</details>
+
+<h3>Related Tools</h3>
+<ul>
+  <li><a href="/word-counter/">Word Counter</a></li>
+  <li><a href="/strong-password-generator/">Strong Password Generator</a></li>
+  <li><a href="/typing-speed-test/">Typing Speed Test</a></li>
+</ul>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator</title>
+<style>
+  .wct-percent{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-percent *{box-sizing:border-box;margin:0;padding:0}
+  .wct-percent .wrap{max-width:680px;margin:0 auto}
+  .wct-percent h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-percent .sub{color:#5a6478;margin-bottom:22px}
+  .wct-percent .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-percent .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .wct-percent .tab{flex:1;min-width:150px;background:#eef1f7;color:#33405c;border:2px solid transparent;border-radius:9px;padding:10px 8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+  .wct-percent .tab.active{background:#4f6ef2;color:#fff}
+  .wct-percent .calc{display:none}
+  .wct-percent .calc.active{display:block}
+  .wct-percent .field{margin-bottom:14px}
+  .wct-percent .field label{display:block;font-size:.85rem;color:#5a6478;margin-bottom:5px}
+  .wct-percent input[type=number]{width:100%;padding:12px 14px;border:2px solid #dde2ec;border-radius:10px;font-size:1rem;outline:none;transition:border-color .2s;background:#fff;color:#1c2333}
+  .wct-percent input[type=number]:focus{border-color:#4f6ef2}
+  .wct-percent .result{background:#f6f8fd;border:1px solid #e3e8f2;border-radius:10px;padding:18px;font-size:1.3rem;font-weight:700;color:#4f6ef2;text-align:center}
+  .wct-percent .hint{font-size:.8rem;color:#8a93a6;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wct-percent">
+<div class="wrap">
+  <h1>Percentage Calculator</h1>
+  <p class="sub">Three handy percentage calculations in one tool: find a percent of a number, what percent one number is of another, and percent change.</p>
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(this,0)">X% of Y</div>
+      <div class="tab" onclick="showTab(this,1)">X is what % of Y?</div>
+      <div class="tab" onclick="showTab(this,2)">% Change</div>
+    </div>
+
+    <div class="calc active" id="c0">
+      <div class="field"><label>Percent (X)</label><input type="number" id="a1" placeholder="e.g. 25"></div>
+      <div class="field"><label>Number (Y)</label><input type="number" id="a2" placeholder="e.g. 200"></div>
+      <div class="result" id="r0">25% of 200 = 50</div>
+    </div>
+
+    <div class="calc" id="c1">
+      <div class="field"><label>First number (X)</label><input type="number" id="b1" placeholder="e.g. 30"></div>
+      <div class="field"><label>Second number (Y)</label><input type="number" id="b2" placeholder="e.g. 150"></div>
+      <div class="result" id="r1">30 is 20% of 150</div>
+    </div>
+
+    <div class="calc" id="c2">
+      <div class="field"><label>Old value</label><input type="number" id="c1v" placeholder="e.g. 80"></div>
+      <div class="field"><label>New value</label><input type="number" id="c2v" placeholder="e.g. 100"></div>
+      <div class="result" id="r2">Change = +25%</div>
+    </div>
+    <p class="hint">Results update automatically as you type. Great for discounts, tips, marks, and comparing growth.</p>
+  </div>
+</div>
+</div>
+<script>
+  function showTab(el, idx) {
+    document.querySelectorAll('.wct-percent .tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+    document.querySelectorAll('.wct-percent .calc').forEach((c, i) => c.classList.toggle('active', i === idx));
+  }
+  function calc0() {
+    const x = +document.getElementById('a1').value, y = +document.getElementById('a2').value;
+    const res = (x / 100) * y;
+    document.getElementById('r0').textContent = isFinite(res) ? `${x}% of ${y} = ${+res.toFixed(4)}` : 'Enter both numbers';
+  }
+  function calc1() {
+    const x = +document.getElementById('b1').value, y = +document.getElementById('b2').value;
+    const res = y ? (x / y * 100) : NaN;
+    document.getElementById('r1').textContent = isFinite(res) ? `${x} is ${+res.toFixed(4)}% of ${y}` : 'Enter both numbers';
+  }
+  function calc2() {
+    const o = +document.getElementById('c1v').value, n = +document.getElementById('c2v').value;
+    const res = o ? ((n - o) / o * 100) : NaN;
+    const sign = isFinite(res) && res > 0 ? '+' : '';
+    document.getElementById('r2').textContent = isFinite(res) ? `Change = ${sign}${+res.toFixed(4)}%` : 'Enter both values';
+  }
+  ['a1','a2'].forEach(id => document.getElementById(id).addEventListener('input', calc0));
+  ['b1','b2'].forEach(id => document.getElementById(id).addEventListener('input', calc1));
+  ['c1v','c2v'].forEach(id => document.getElementById(id).addEventListener('input', calc2));
+</script>
+</body>
+</html>

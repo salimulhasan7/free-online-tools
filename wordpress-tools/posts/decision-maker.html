@@ -1,0 +1,151 @@
+<!--
+================================================================
+WORDPRESS POST / PAGE SETTINGS
+================================================================
+Title:          Random Decision Maker - Flip a Coin, Roll a Dice, Yes or No
+Slug:           random-decision-maker
+Meta description: Free random decision maker. Flip a coin, roll a dice, answer yes or no questions, or pick randomly from your own list. Settle any argument instantly.
+Focus keyword:  decision maker
+Category:       Fun Tools > Random Generators
+Tags:           flip a coin, coin flip, dice roller, yes or no, decision maker, magic 8 ball
+Featured image: Screenshot of the decision maker tool UI with coins and dice
+================================================================
+HOW TO ADD TO WORDPRESS:
+1. Create a new Page titled "Random Decision Maker".
+2. Add a "Custom HTML" block and paste EVERYTHING below.
+3. Set Slug to "random-decision-maker".
+4. Add meta description + focus keyword in Rank Math SEO.
+================================================================
+PASTE FROM HERE
+================================================================
+-->
+<style>
+  .wct-decision{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-decision *{box-sizing:border-box;margin:0;padding:0}
+  .wct-decision .wrap{max-width:680px;margin:0 auto}
+  .wct-decision h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-decision .sub{color:#5a6478;margin-bottom:22px}
+  .wct-decision .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-decision .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .wct-decision .tab{flex:1;min-width:130px;background:#eef1f7;color:#33405c;border:2px solid transparent;border-radius:9px;padding:10px 8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+  .wct-decision .tab.active{background:#4f6ef2;color:#fff}
+  .wct-decision .calc{display:none;text-align:center}
+  .wct-decision .calc.active{display:block}
+  .wct-decision .big{font-size:2.6rem;font-weight:800;color:#4f6ef2;min-height:4.2rem;margin:14px 0;display:flex;align-items:center;justify-content:center}
+  .wct-decision button{background:#4f6ef2;color:#fff;border:0;border-radius:9px;padding:12px 24px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s}
+  .wct-decision button:hover{opacity:.9}
+  .wct-decision button:active{transform:scale(.96)}
+  .wct-decision textarea{width:100%;min-height:130px;border:2px solid #dde2ec;border-radius:10px;padding:12px;font-size:.95rem;resize:vertical;font-family:inherit;outline:none;text-align:left;background:#fff;color:#1c2333}
+  .wct-decision textarea:focus{border-color:#4f6ef2}
+  .wct-decision .flip-anim{animation:flip .6s ease-in-out}
+  @keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(180deg)}100%{transform:rotateX(360deg)}}
+  .wct-decision .hint{font-size:.8rem;color:#8a93a6;margin-top:14px;text-align:left}
+</style>
+<div class="wct-decision">
+<div class="wrap">
+  <h1>Random Decision Maker</h1>
+  <p class="sub">Flip a coin, roll a dice, answer yes-or-no questions, or pick randomly from your own list. Let chance decide.</p>
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(this,0)">Flip a Coin</div>
+      <div class="tab" onclick="showTab(this,1)">Roll a Dice</div>
+      <div class="tab" onclick="showTab(this,2)">Yes / No</div>
+      <div class="tab" onclick="showTab(this,3)">Pick a Choice</div>
+    </div>
+
+    <div class="calc active" id="c0">
+      <div class="big" id="coinResult">Heads</div>
+      <button onclick="flipCoin()">Flip Coin</button>
+    </div>
+
+    <div class="calc" id="c1">
+      <div class="big" id="diceResult">6</div>
+      <button onclick="rollDice()">Roll Dice</button>
+    </div>
+
+    <div class="calc" id="c2">
+      <div class="big" id="ynResult">Yes</div>
+      <button onclick="yesNo()">Ask the Magic 8 Ball</button>
+    </div>
+
+    <div class="calc" id="c3">
+      <textarea id="choices" placeholder="Enter one option per line, e.g.:&#10;Pizza&#10;Burger&#10;Sushi"></textarea>
+      <div class="big" id="pickResult"></div>
+      <button onclick="pick()">Pick for me</button>
+    </div>
+    <p class="hint">Totally random results generated in your browser. Settle arguments, break decision paralysis, or just have fun.</p>
+  </div>
+</div>
+</div>
+<script>
+  function showTab(el, idx) {
+    document.querySelectorAll('.wct-decision .tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+    document.querySelectorAll('.wct-decision .calc').forEach((c, i) => c.classList.toggle('active', i === idx));
+  }
+  const cr = document.getElementById('coinResult');
+  function flipCoin() {
+    cr.classList.remove('flip-anim');
+    void cr.offsetWidth;
+    cr.classList.add('flip-anim');
+    setTimeout(() => { cr.textContent = Math.random() < 0.5 ? 'Heads' : 'Tails'; }, 300);
+  }
+  function rollDice() {
+    document.getElementById('diceResult').textContent = Math.floor(Math.random() * 6) + 1;
+  }
+  function yesNo() {
+    const a = ['Yes','No','Maybe','Definitely','Ask again later','Not now','For sure','I doubt it'];
+    document.getElementById('ynResult').textContent = a[Math.floor(Math.random() * a.length)];
+  }
+  function pick() {
+    const list = document.getElementById('choices').value.split('\n').map(s => s.trim()).filter(Boolean);
+    const el = document.getElementById('pickResult');
+    if (!list.length) { el.textContent = 'Enter some options first'; return; }
+    el.textContent = list[Math.floor(Math.random() * list.length)];
+  }
+</script>
+
+<hr>
+
+<h2>How to Use the Decision Maker</h2>
+<ol>
+  <li>Flip a coin for heads or tails.</li>
+  <li>Roll a dice for random numbers from 1 to 6.</li>
+  <li>Ask a yes or no question, or enter your own list and let the tool choose.</li>
+</ol>
+
+<h2>Features</h2>
+<ul>
+  <li><strong>Coin flip</strong> with a fun flip animation.</li>
+  <li><strong>Dice roller</strong> for board games and quick random numbers.</li>
+  <li><strong>Yes or No answers</strong> like a magic 8 ball.</li>
+  <li><strong>Custom list picker</strong> - paste options and get a random winner.</li>
+  <li><strong>100% random</strong> and free, with no limit on uses.</li>
+</ul>
+
+<h2>When to Use a Random Decision Maker</h2>
+<p>Stuck between pizza and sushi? Who goes first in a game? Should you take the job or stay? When the choice really doesn't matter, let chance decide and move on. It's a fun, honest way to break decision paralysis and it settles arguments with zero drama.</p>
+
+<h2>Frequently Asked Questions</h2>
+<details>
+  <summary>Is the coin flip truly random?</summary>
+  <p>The result is generated by your browser's random number generator, which is designed to be unbiased. And just like a real coin, it's 50/50.</p>
+</details>
+<details>
+  <summary>Can I pick from more than one option?</summary>
+  <p>Yes, use the "Pick a Choice" tab and enter as many options as you like, one per line.</p>
+</details>
+<details>
+  <summary>Is this free to use?</summary>
+  <p>Yes, completely free with no account and no limits.</p>
+</details>
+<details>
+  <summary>Does it work on mobile?</summary>
+  <p>Yes, the tool is fully responsive and works great on phones and tablets.</p>
+</details>
+
+<h3>Related Tools</h3>
+<ul>
+  <li><a href="/typing-speed-test/">Typing Speed Test</a></li>
+  <li><a href="/morse-code-translator/">Morse Code Translator</a></li>
+  <li><a href="/cool-username-generator/">Cool Username Generator</a></li>
+</ul>

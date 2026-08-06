@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Generator</title>
+<style>
+  .wct-palette{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-palette *{box-sizing:border-box;margin:0;padding:0}
+  .wct-palette .wrap{max-width:760px;margin:0 auto}
+  .wct-palette h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-palette .sub{color:#5a6478;margin-bottom:22px}
+  .wct-palette .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-palette .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:18px}
+  .wct-palette .controls label{font-size:.9rem;color:#5a6478;display:flex;align-items:center;gap:8px}
+  .wct-palette input[type=color]{width:44px;height:40px;border:2px solid #dde2ec;border-radius:8px;background:none;cursor:pointer;padding:2px}
+  .wct-palette .palette{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px}
+  .wct-palette .swatch{border-radius:12px;height:120px;cursor:pointer;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;transition:transform .15s}
+  .wct-palette .swatch:hover{transform:scale(1.04)}
+  .wct-palette .swatch span{background:rgba(0,0,0,.55);color:#fff;font-family:ui-monospace,Menlo,monospace;font-size:.85rem;border-radius:6px;padding:4px 8px}
+  .wct-palette .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .wct-palette button{background:#4f6ef2;color:#fff;border:0;border-radius:9px;padding:11px 20px;font-size:.95rem;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s}
+  .wct-palette button:hover{opacity:.9}
+  .wct-palette button:active{transform:scale(.97)}
+  .wct-palette button.ghost{background:#e8ecf7;color:#33405c}
+  .wct-palette .hint{font-size:.8rem;color:#8a93a6;margin-top:14px}
+  .wct-palette #msg{font-size:.85rem;color:#30a46c;font-weight:600;margin-top:10px;min-height:1.2em}
+</style>
+</head>
+<body>
+<div class="wct-palette">
+<div class="wrap">
+  <h1>Color Palette Generator</h1>
+  <p class="sub">Generate a harmonious color palette from any base color, or let the tool surprise you with a random scheme. Click any swatch to copy its hex code.</p>
+  <div class="card">
+    <div class="controls">
+      <label for="base">Base color</label>
+      <input type="color" id="base" value="#4f6ef2" onchange="genFromBase()">
+      <button class="ghost" onclick="genFromBase()">Build palette</button>
+      <button class="ghost" onclick="random()">Random palette</button>
+    </div>
+    <div class="palette" id="palette"></div>
+    <div class="btnrow">
+      <button onclick="copyAll()">Copy all hex codes</button>
+      <button class="ghost" onclick="genFromBase()">New palette</button>
+    </div>
+    <div id="msg"></div>
+    <p class="hint">The generator creates 5 harmonious shades: complement, analogous and triadic. Perfect for branding, wallpapers, UI design and art projects.</p>
+  </div>
+</div>
+</div>
+<script>
+  const palette = document.getElementById('palette');
+  function hexToRgb(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function rgbToHex(r, g, b) {
+    const c = v => Math.round(v).toString(16).padStart(2, '0');
+    return '#' + c(r) + c(g) + c(b);
+  }
+  function hslToRgb(h, s, l) {
+    h = ((h % 360) + 360) % 360;
+    s /= 100; l /= 100;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return Math.round(255 * c);
+    };
+    return [f(0), f(8), f(4)];
+  }
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0;
+    const l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h *= 60;
+    }
+    return [h, s * 100, l * 100];
+  }
+  function render(colors) {
+    palette.innerHTML = '';
+    colors.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'swatch';
+      el.style.background = c;
+      el.innerHTML = `<span>${c}</span>`;
+      el.onclick = () => {
+        navigator.clipboard.writeText(c).then(() => {
+          document.getElementById('msg').textContent = 'Copied ' + c;
+        });
+      };
+      palette.appendChild(el);
+    });
+  }
+  function fromHex(hex) {
+    const [h, s, l] = rgbToHsl(...hexToRgb(hex));
+    return [
+      hex,
+      rgbToHex(...hslToRgb(h, Math.min(100, s * 0.6), Math.max(8, l - 28))),
+      rgbToHex(...hslToRgb(h + 30, s, l)),
+      rgbToHex(...hslToRgb(h - 30, s, l)),
+      rgbToHex(...hslToRgb(h + 150, Math.min(100, s + 10), l))
+    ];
+  }
+  function genFromBase() {
+    render(fromHex(document.getElementById('base').value));
+  }
+  function random() {
+    const h = Math.floor(Math.random() * 360);
+    const s = 55 + Math.floor(Math.random() * 30);
+    const l = 50 + Math.floor(Math.random() * 15);
+    const base = rgbToHex(...hslToRgb(h, s, l));
+    document.getElementById('base').value = base;
+    render(fromHex(base));
+  }
+  function copyAll() {
+    const codes = [...palette.querySelectorAll('.swatch span')].map(s => s.textContent).join(', ');
+    navigator.clipboard.writeText(codes).then(() => {
+      document.getElementById('msg').textContent = 'Copied: ' + codes;
+    });
+  }
+  genFromBase();
+</script>
+</body>
+</html>

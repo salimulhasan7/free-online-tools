@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typing Speed Test - WPM</title>
+<style>
+  .wct-typing{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-typing *{box-sizing:border-box;margin:0;padding:0}
+  .wct-typing .wrap{max-width:720px;margin:0 auto}
+  .wct-typing h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-typing .sub{color:#5a6478;margin-bottom:22px}
+  .wct-typing .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-typing .topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .wct-typing .timer{font-size:1.6rem;font-weight:800;color:#4f6ef2}
+  .wct-typing .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin-bottom:16px;width:100%}
+  .wct-typing .stat{background:#f6f8fd;border:1px solid #e3e8f2;border-radius:10px;padding:12px;text-align:center}
+  .wct-typing .stat b{display:block;font-size:1.4rem;color:#4f6ef2}
+  .wct-typing .stat span{font-size:.72rem;color:#6b7488;text-transform:uppercase;letter-spacing:.5px}
+  .wct-typing #text{background:#fafbfe;border:2px solid #dde2ec;border-radius:10px;padding:16px;font-size:1.15rem;line-height:1.9;min-height:130px;letter-spacing:.3px;cursor:text}
+  .wct-typing #text span.correct{color:#30a46c}
+  .wct-typing #text span.wrong{color:#e5484d;background:rgba(229,72,77,.12);border-radius:3px}
+  .wct-typing #text span.current{background:#eef1ff;border-radius:3px}
+  .wct-typing #hiddenInput{position:absolute;left:-9999px}
+  .wct-typing .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .wct-typing button{background:#4f6ef2;color:#fff;border:0;border-radius:9px;padding:11px 20px;font-size:.95rem;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s}
+  .wct-typing button:hover{opacity:.9}
+  .wct-typing button:active{transform:scale(.97)}
+  .wct-typing button.ghost{background:#e8ecf7;color:#33405c}
+  .wct-typing .hint{font-size:.8rem;color:#8a93a6;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wct-typing">
+<div class="wrap">
+  <h1>Typing Speed Test</h1>
+  <p class="sub">Measure your typing speed in WPM and accuracy over 60 seconds. Click start, then type exactly what you see.</p>
+  <div class="card">
+    <div class="topbar">
+      <div class="timer" id="timer">60s</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="wpm">0</b><span>WPM</span></div>
+      <div class="stat"><b id="acc">100%</b><span>Accuracy</span></div>
+      <div class="stat"><b id="charsTyped">0</b><span>Chars</span></div>
+    </div>
+    <div id="text" tabindex="0"></div>
+    <input id="hiddenInput" autocomplete="off">
+    <div class="btnrow">
+      <button id="startBtn" onclick="start()">Start test</button>
+      <button class="ghost" onclick="reset()">New text</button>
+    </div>
+    <p class="hint">After 60 seconds your score is shown. Click anywhere on the text area to begin typing.</p>
+  </div>
+</div>
+</div>
+<script>
+  const samples = [
+    "The quick brown fox jumps over the lazy dog while the sun rises over the quiet hills.",
+    "Practice makes perfect, and typing faster is simply a matter of practice every single day.",
+    "Good typists keep their eyes on the screen and let their fingers remember where the keys are.",
+    "Technology connects people across the world in ways that were unthinkable just decades ago.",
+    "Reading and writing are the foundations of all learning and communication between humans.",
+    "Speed comes with time, but accuracy is built from the very first keystroke you make.",
+    "The internet is a vast ocean of information waiting to be explored by curious minds.",
+    "Great things are done by a series of small things brought together with patience and care."
+  ];
+  const textEl = document.getElementById('text');
+  const hidden = document.getElementById('hiddenInput');
+  let words, cur = 0, correct = 0, wrong = 0, total = 0, timer = null, timeLeft = 60, running = false;
+  function build() {
+    words = samples[Math.floor(Math.random() * samples.length)].split(' ');
+    textEl.innerHTML = words.map(w => `<span>${w}</span>`).join(' ');
+    textEl.querySelectorAll('span')[0].classList.add('current');
+    cur = 0; correct = 0; wrong = 0; total = 0;
+    document.getElementById('wpm').textContent = '0';
+    document.getElementById('acc').textContent = '100%';
+    document.getElementById('charsTyped').textContent = '0';
+    document.getElementById('timer').textContent = '60s';
+  }
+  function start() {
+    if (running) return;
+    build();
+    running = true;
+    timeLeft = 60;
+    hidden.focus();
+    document.getElementById('timer').textContent = timeLeft + 's';
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').textContent = timeLeft + 's';
+      if (timeLeft <= 0) end();
+    }, 1000);
+  }
+  function end() {
+    clearInterval(timer); timer = null; running = false;
+    document.getElementById('wpm').textContent = Math.round(correct / 5);
+    document.getElementById('acc').textContent = total ? Math.round(correct / total * 100) + '%' : '0%';
+  }
+  hidden.addEventListener('input', (e) => {
+    if (!running) { start(); }
+    const typed = e.target.value;
+    if (typed.endsWith(' ')) {
+      const span = textEl.querySelectorAll('span')[cur];
+      const w = words[cur];
+      if (typed.trim() === w) { span.classList.add('correct'); correct += w.length; }
+      else { span.classList.add('wrong'); wrong += w.length; }
+      total += w.length;
+      cur++;
+      if (cur >= words.length) { end(); return; }
+      textEl.querySelectorAll('span')[cur].classList.add('current');
+      textEl.querySelectorAll('span')[cur - 1].classList.remove('current');
+      hidden.value = '';
+      document.getElementById('wpm').textContent = Math.round(correct / 5);
+      document.getElementById('charsTyped').textContent = correct + wrong;
+    }
+  });
+  textEl.addEventListener('click', () => { if (!running) start(); });
+  function reset() {
+    clearInterval(timer); timer = null; running = false;
+    hidden.value = '';
+    build();
+  }
+  build();
+</script>
+</body>
+</html>

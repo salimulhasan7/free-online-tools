@@ -1,0 +1,140 @@
+<!--
+================================================================
+WORDPRESS POST / PAGE SETTINGS
+================================================================
+Title:          Age Calculator - Calculate Your Exact Age Online
+Slug:           age-calculator
+Meta description: Free online age calculator. Find your exact age in years, months, days, hours, minutes and seconds from your date of birth. Includes birthday countdown.
+Focus keyword:  age calculator
+Category:       Work Tools > Calculators
+Tags:           age calculator, age from date of birth, how old am i, birthday countdown
+Featured image: Screenshot of the age calculator tool UI
+================================================================
+HOW TO ADD TO WORDPRESS:
+1. Create a new Page titled "Age Calculator".
+2. Add a "Custom HTML" block and paste EVERYTHING below.
+3. Set Slug to "age-calculator".
+4. Add meta description + focus keyword in Rank Math SEO.
+================================================================
+PASTE FROM HERE
+================================================================
+-->
+<style>
+  .wct-age{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f5f9;color:#1c2333;line-height:1.6;min-height:100vh;padding:28px 16px;box-sizing:border-box}
+  .wct-age *{box-sizing:border-box;margin:0;padding:0}
+  .wct-age .wrap{max-width:620px;margin:0 auto}
+  .wct-age h1{font-size:1.8rem;margin-bottom:6px;border:none}
+  .wct-age .sub{color:#5a6478;margin-bottom:22px}
+  .wct-age .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(16,24,64,.07);padding:22px}
+  .wct-age .field{margin-bottom:16px}
+  .wct-age .field label{display:block;font-size:.85rem;color:#5a6478;margin-bottom:5px}
+  .wct-age input[type=datetime-local]{width:100%;padding:12px 14px;border:2px solid #dde2ec;border-radius:10px;font-size:1rem;outline:none;background:#fff;color:#1c2333}
+  .wct-age input[type=datetime-local]:focus{border-color:#4f6ef2}
+  .wct-age .results{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin-top:18px}
+  .wct-age .res{background:#f6f8fd;border:1px solid #e3e8f2;border-radius:10px;padding:14px 8px;text-align:center}
+  .wct-age .res b{display:block;font-size:1.35rem;color:#4f6ef2}
+  .wct-age .res span{font-size:.75rem;color:#6b7488;text-transform:uppercase;letter-spacing:.5px}
+  .wct-age .note{background:#fff8e6;border:1px solid #f5d78e;border-radius:10px;padding:14px;margin-top:16px;font-size:.9rem}
+  .wct-age .hint{font-size:.8rem;color:#8a93a6;margin-top:14px}
+</style>
+<div class="wct-age">
+<div class="wrap">
+  <h1>Age Calculator</h1>
+  <p class="sub">Find your exact age in years, months, days, hours, minutes and seconds. Enter your date of birth and watch the numbers tick live.</p>
+  <div class="card">
+    <div class="field">
+      <label for="dob">Date of birth</label>
+      <input type="datetime-local" id="dob">
+    </div>
+    <div class="results">
+      <div class="res"><b id="y">0</b><span>Years</span></div>
+      <div class="res"><b id="m">0</b><span>Months</span></div>
+      <div class="res"><b id="d">0</b><span>Days</span></div>
+      <div class="res"><b id="h">0</b><span>Hours</span></div>
+      <div class="res"><b id="mi">0</b><span>Minutes</span></div>
+      <div class="res"><b id="s">0</b><span>Seconds</span></div>
+    </div>
+    <div class="note" id="note">Enter your date of birth to see your exact age.</div>
+    <p class="hint">The total time display updates every second. Useful for birthday countdowns, application forms and fun fact sharing.</p>
+  </div>
+</div>
+</div>
+<script>
+  const dobInput = document.getElementById('dob');
+  dobInput.value = '2000-01-01T00:00';
+  function calc() {
+    const v = dobInput.value;
+    if (!v) { document.getElementById('note').textContent = 'Enter your date of birth to see your exact age.'; return; }
+    const bd = new Date(v);
+    const now = new Date();
+    if (bd > now) { document.getElementById('note').textContent = 'That date is in the future.'; return; }
+    const secs = Math.floor((now - bd) / 1000);
+    const days = Math.floor(secs / 86400);
+    const y = Math.floor(days / 365.2425);
+    const remDays = days - Math.floor(y * 365.2425);
+    const m = Math.floor(remDays / 30.436875);
+    const d = Math.floor(remDays - m * 30.436875);
+    const h = Math.floor((secs % 86400) / 3600);
+    const mi = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    document.getElementById('y').textContent = y;
+    document.getElementById('m').textContent = m;
+    document.getElementById('d').textContent = d;
+    document.getElementById('h').textContent = h;
+    document.getElementById('mi').textContent = mi;
+    document.getElementById('s').textContent = s;
+    const nb = new Date(now.getFullYear(), bd.getMonth(), bd.getDate(), bd.getHours(), bd.getMinutes(), bd.getSeconds());
+    if (nb < now) nb.setFullYear(nb.getFullYear() + 1);
+    const nd = Math.ceil((nb - now) / 86400000);
+    document.getElementById('note').textContent = `Your next birthday is in ${nd} day${nd === 1 ? '' : 's'}. You have been alive for ${days.toLocaleString()} days.`;
+  }
+  dobInput.addEventListener('input', calc);
+  setInterval(calc, 1000);
+  calc();
+</script>
+
+<hr>
+
+<h2>How to Calculate Your Age</h2>
+<ol>
+  <li>Pick your date of birth (and time, if you know it).</li>
+  <li>The tool instantly shows your age in years, months, days, hours, minutes and seconds.</li>
+  <li>Check the note below for your next birthday countdown.</li>
+</ol>
+
+<h2>Features</h2>
+<ul>
+  <li><strong>Live seconds counter</strong> - your age ticks in real time.</li>
+  <li><strong>Full breakdown</strong> in years, months, days, hours, minutes and seconds.</li>
+  <li><strong>Birthday countdown</strong> and total days alive.</li>
+  <li><strong>Private</strong> - your date of birth never leaves your device.</li>
+  <li><strong>Free and unlimited</strong> - check ages for friends and family too.</li>
+</ul>
+
+<h2>Why Use an Age Calculator?</h2>
+<p>From filling out online forms to settling "who is older" arguments with friends, an age calculator saves you from doing date math by hand. It is also great for milestone planning - retirement dates, birthday gifts, or just sharing the fun fact of how many seconds old you are.</p>
+
+<h2>Frequently Asked Questions</h2>
+<details>
+  <summary>How does the age calculator count months and days?</summary>
+  <p>It converts your total time alive into years (using the average year length), then breaks the remainder into months, days, hours, minutes and seconds.</p>
+</details>
+<details>
+  <summary>Does it count leap years correctly?</summary>
+  <p>Yes, the calculation uses 365.2425 days per year, which accounts for leap years automatically.</p>
+</details>
+<details>
+  <summary>Can I calculate someone else's age?</summary>
+  <p>Yes, just enter their date of birth. There is no limit to how many calculations you can do.</p>
+</details>
+<details>
+  <summary>Is my date of birth stored?</summary>
+  <p>No. Everything is calculated locally in your browser and nothing is saved.</p>
+</details>
+
+<h3>Related Tools</h3>
+<ul>
+  <li><a href="/percentage-calculator/">Percentage Calculator</a></li>
+  <li><a href="/random-decision-maker/">Random Decision Maker</a></li>
+  <li><a href="/word-counter/">Word Counter</a></li>
+</ul>
