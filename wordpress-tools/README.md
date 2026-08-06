@@ -3,6 +3,9 @@
 A complete starter pack for a free online tools website: **10 working tools**
 (HTML/CSS/JS, no backend needed) plus **10 SEO-optimized WordPress posts**.
 
+**Live preview:** https://salimulhasan7.github.io/free-online-tools/
+**Source repo:** https://github.com/salimulhasan7/free-online-tools
+
 ```
 wordpress-tools/
   content-plan.md          # Keyword research & growth strategy
